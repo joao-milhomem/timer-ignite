@@ -1,18 +1,19 @@
 import styled from 'styled-components'
 
 export const DefaultLayoutContainer = styled.div`
-  background-color: ${(props) => props.theme['gray-800']};
-  border-radius: 8px;
+  height: 100vh;
+  display: grid;
+  place-content: center;
 
-  max-width: 74rem;
-  margin-inline: auto;
+  .content {
+    width: 80vw;
+    max-width: 1120px;
+    padding: 2.5rem;
 
-  height: calc(100vh - 10rem);
-  margin-block: 5rem;
+    display: grid;
+    gap: 3rem;
 
-  padding: 3.5rem;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    background-color: ${(props) => props.theme['gray-800']};
+    border-radius: 8px;
+  }
 `

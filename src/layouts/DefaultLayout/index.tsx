@@ -5,8 +5,10 @@ import { DefaultLayoutContainer } from './styled'
 export function DefaultLayout() {
   return (
     <DefaultLayoutContainer>
-      <Header />
-      <Outlet />
+      <div className="content">
+        <Header />
+        <Outlet />
+      </div>
     </DefaultLayoutContainer>
   )
 }

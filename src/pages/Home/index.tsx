@@ -16,7 +16,6 @@ export function Home() {
 
           <label htmlFor="">durante</label>
           <input type="number" />
-
           <span>minutos.</span>
         </InputContainer>
 
