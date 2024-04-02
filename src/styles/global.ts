@@ -16,6 +16,7 @@ export default createGlobalStyle`
     background-color: ${(props) => props.theme['gray-900']};
     color:  ${(props) => props.theme['gray-100']};
     font-size:1rem;
+    font-family: "Roboto", sans-serif;
   }
   
   a {
@@ -23,6 +24,7 @@ export default createGlobalStyle`
   }
 
   button , input, select , textarea {
+    font-family: "Roboto", sans-serif;
     background: transparent;
     border: none;
   }
