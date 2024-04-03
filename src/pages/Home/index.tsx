@@ -6,11 +6,21 @@ import {
   Separator,
   TimerContainer,
 } from './styled'
+import { useForm } from 'react-hook-form'
 
 export function Home() {
+  const { register, handleSubmit, watch } = useForm()
+
+  const title = watch('title')
+  const isSubmitDisable = title
+
+  const handleSubmitFn = (data: unknown) => {
+    console.log(data)
+  }
+
   return (
     <HomeContainer>
-      <form action="">
+      <form onSubmit={handleSubmit(handleSubmitFn)}>
         <InputContainer>
           <>
             <label htmlFor="title">Vou trabalhar em</label>
@@ -19,6 +29,7 @@ export function Home() {
               id="title"
               placeholder="De um nome para o seu projeto"
               list="task-suggestions"
+              {...register('title')}
             />
 
             <datalist id="task-suggestions">
@@ -37,6 +48,7 @@ export function Home() {
               step={5}
               min={5}
               max={60}
+              {...register('minutes')}
             />
           </>
 
@@ -51,7 +63,7 @@ export function Home() {
           <span>0</span>
         </TimerContainer>
 
-        <ButtonSubmit type="submit" disabled>
+        <ButtonSubmit type="submit" disabled={!isSubmitDisable}>
           <Play size={'2rem'} />
           Começar
         </ButtonSubmit>
