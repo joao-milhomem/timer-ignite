@@ -1,68 +1,74 @@
 import styled from 'styled-components'
 
 export const HomeContainer = styled.div`
-  display: grid;
-  place-content: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
 
   > form {
-    display: grid;
-    gap: 2.5rem;
+    height: 100%;
+    min-width: 648px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 `
 
 export const InputContainer = styled.div`
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 
   font-weight: 700;
   font-size: 1.125rem;
 
   input {
-    border-top: 2px solid transparent;
-    border-bottom: 2px solid ${(props) => props.theme['gray-100']};
-    color: ${(props) => props.theme['gray-100']};
+    padding-block: 0.25rem;
 
     font-size: 1.125rem;
     font-weight: 700;
-
-    padding: 0.75rem 0.5rem;
+    text-align: center;
+    border-top: 2px solid transparent;
+    color: ${(props) => props.theme.white};
+    border-bottom: 2px solid ${(props) => props.theme['gray-400']};
+    flex: 1;
   }
 
   input[type='number'] {
-    max-width: 4.5rem;
-    text-align: center;
+    max-width: 2.5rem;
   }
 `
 
 export const TimerContainer = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
 
+  font-size: 10rem;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+
   > span {
-    font-size: 6rem;
-    font-weight: 700;
-    font-family: 'Roboto Mono', monospace;
+    padding-inline: 1rem;
 
     background-color: ${(props) => props.theme['gray-700']};
     border-radius: 8px;
-    padding: 2.5rem 1.5rem;
   }
 `
 
 export const Separator = styled.small`
   color: ${(props) => props.theme['green-500']};
   background-color: none;
-  font-size: 10rem;
 `
 
 export const ButtonSubmit = styled.button`
   background-color: ${(props) => props.theme['green-500']};
-  color: ${(props) => props.theme['gray-100']};
+  color: ${(props) => props.theme.white};
   border-radius: 8px;
   cursor: pointer;
 
   font-weight: 700;
+  font-size: 1rem;
 
   width: 100%;
   padding: 1rem;

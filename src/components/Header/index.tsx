@@ -1,15 +1,21 @@
 import { NavLink } from 'react-router-dom'
 import { HeaderContainer } from './styled'
-import igniteLogo from '../../assets/logo.svg'
+import { ClockCounterClockwise, Timer } from '@phosphor-icons/react'
+import { Logo } from '../../assets/Logo'
 
 export function Header() {
   return (
     <HeaderContainer>
-      <img src={igniteLogo} alt="" />
+      <Logo />
 
       <nav>
-        <NavLink to="/">link1</NavLink>
-        <NavLink to="/history">history</NavLink>
+        <NavLink to="/" title="timer">
+          <Timer size="2rem" />
+        </NavLink>
+
+        <NavLink to="/history" title="history">
+          <ClockCounterClockwise size="2rem" />
+        </NavLink>
       </nav>
     </HeaderContainer>
   )

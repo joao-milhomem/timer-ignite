@@ -1,3 +1,4 @@
+import { Play } from '@phosphor-icons/react'
 import {
   ButtonSubmit,
   HomeContainer,
@@ -11,11 +12,16 @@ export function Home() {
     <HomeContainer>
       <form action="">
         <InputContainer>
-          <label htmlFor="">Vou trabalhar em</label>
-          <input type="text" />
+          <label htmlFor="title">Vou trabalhar em</label>
+          <input
+            type="text"
+            id="title"
+            placeholder="De um nome para o seu projeto"
+          />
 
-          <label htmlFor="">durante</label>
-          <input type="number" />
+          <label htmlFor="minutes">durante</label>
+          <input type="number" id="minutes" placeholder="00" />
+
           <span>minutos.</span>
         </InputContainer>
 
@@ -27,7 +33,10 @@ export function Home() {
           <span>0</span>
         </TimerContainer>
 
-        <ButtonSubmit type="submit">Começar</ButtonSubmit>
+        <ButtonSubmit type="submit">
+          <Play size={'2rem'} />
+          Começar
+        </ButtonSubmit>
       </form>
     </HomeContainer>
   )
