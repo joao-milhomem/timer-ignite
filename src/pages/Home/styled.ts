@@ -24,19 +24,24 @@ export const InputContainer = styled.div`
   font-size: 1.125rem;
 
   input {
+    flex: 1;
     padding-block: 0.25rem;
 
     font-size: 1.125rem;
     font-weight: 700;
     text-align: center;
+
     border-top: 2px solid transparent;
     color: ${(props) => props.theme.white};
     border-bottom: 2px solid ${(props) => props.theme['gray-400']};
-    flex: 1;
-  }
 
-  input[type='number'] {
-    max-width: 2.5rem;
+    &:focus {
+      outline: none;
+    }
+
+    &[type='number'] {
+      max-width: 2.5rem;
+    }
   }
 `
 
@@ -80,5 +85,10 @@ export const ButtonSubmit = styled.button`
 
   &:hover {
     filter: brightness(0.9);
+  }
+
+  &:disabled {
+    filter: opacity(0.5);
+    cursor: not-allowed;
   }
 `

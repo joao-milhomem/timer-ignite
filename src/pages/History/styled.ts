@@ -16,7 +16,7 @@ export const HistoryContainer = styled.div`
   .table-container {
     display: flex;
     overflow: auto;
-    height: 100%;
+    /* height: 100%; */
   }
 
   table {
@@ -48,37 +48,45 @@ export const HistoryContainer = styled.div`
 
       tr {
         border-bottom: 4px solid ${(props) => props.theme['gray-800']};
-        overflow: hidden;
-      }
 
-      tr:last-child td:last-child {
-        border-radius: 0 0 8px 0;
-      }
+        &:last-child td:last-child {
+          border-radius: 0 0 8px 0;
+        }
 
-      tr:last-child td:first-child {
-        border-radius: 0 0 0 8px;
-      }
+        &:last-child td:first-child {
+          border-radius: 0 0 0 8px;
+        }
 
-      td {
-        padding: 1rem 1.5rem;
-      }
-
-      td:last-child {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        &::before {
-          content: '';
-
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-
-          border-radius: 50%;
-          background-color: yellow;
+        td {
+          padding: 1rem 1.5rem;
         }
       }
     }
+  }
+`
+
+const COLOR_MAPPING = {
+  yellow: 'yellow-500',
+  green: 'green-500',
+  red: 'red-500',
+}
+
+interface StatusProps {
+  statusColor: keyof typeof COLOR_MAPPING
+}
+
+export const Status = styled.span<StatusProps>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.theme[COLOR_MAPPING[props.statusColor]]};
   }
 `

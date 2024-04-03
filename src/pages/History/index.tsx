@@ -1,4 +1,4 @@
-import { HistoryContainer } from './styled'
+import { HistoryContainer, Status } from './styled'
 
 export function History() {
   return (
@@ -18,49 +18,9 @@ export function History() {
               <td>Tarefa 1</td>
               <td>20 minutos</td>
               <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
-            </tr>
-            <tr>
-              <td>Tarefa 1</td>
-              <td>20 minutos</td>
-              <td>Há cerca de 2 semanas</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Finalizado</Status>
+              </td>
             </tr>
           </tbody>
         </table>
