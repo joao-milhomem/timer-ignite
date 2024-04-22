@@ -1,13 +1,15 @@
-import { Play } from '@phosphor-icons/react'
-import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
-import * as zod from 'zod'
+import { HandPalm, Play } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { differenceInSeconds } from 'date-fns'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as zod from 'zod'
 import {
   ButtonSubmit,
   HomeContainer,
   InputContainer,
   Separator,
+  StopButton,
   TimerContainer,
 } from './styled'
 
@@ -23,13 +25,11 @@ interface CycleProps {
   title: string
   minutes: number
   isActive: boolean
+  startDate: Date
+  endDate?: Date
 }
 
 export function Home() {
-  const [cycles, setCycles] = useState<CycleProps[]>([])
-  const [currentCycleID, setCurrentCycleID] = useState<string | null>(null)
-  const [missedSeconds, setMissedSeconds] = useState<number>(0)
-
   const { register, handleSubmit, watch, reset } = useForm<cycleFormInputs>({
     resolver: zodResolver(cycleFormSchema),
     defaultValues: {
@@ -40,36 +40,96 @@ export function Home() {
 
   const titleInputValue = watch('title')
   const minutesInputValue = watch('minutes')
-
   const isSubmitDisable = titleInputValue && minutesInputValue
 
+  const [cycles, setCycles] = useState<CycleProps[]>([])
+  const [currentCycleId, setcurrentCycleId] = useState<string | undefined>()
+  const [missedSeconds, setMissedSeconds] = useState<number>(0)
+
   const handleSubmitFn = (data: cycleFormInputs) => {
+    const newCycleID = String(new Date().getTime())
+    setcurrentCycleId(newCycleID)
+
     const newCycle: CycleProps = {
-      id: String(new Date().getTime()),
+      id: newCycleID,
       title: data.title,
       minutes: data.minutes,
       isActive: true,
+      startDate: new Date(),
     }
+
     setCycles((prevCycles) => [...prevCycles, newCycle])
-    setCurrentCycleID(newCycle.id)
     reset()
   }
 
-  const currentCycle = cycles.find((cycle) => cycle.id === currentCycleID)
+  const handleStopCycle = () => {
+    const currentCycles = cycles.map((cycle) => {
+      if (cycle.id === currentCycleId) {
+        return {
+          ...cycle,
+          isActive: false,
+          endDate: new Date(),
+        }
+      } else {
+        return cycle
+      }
+    })
+    setCycles(currentCycles)
+    setcurrentCycleId(undefined)
+    setMissedSeconds(0)
+  }
 
-  const totalInSeconds = currentCycle ? currentCycle.minutes * 60 : 0
-  const realTimeSeconds = currentCycle ? totalInSeconds - missedSeconds : 0
+  const currentCycle = cycles.find((cycle) => cycle.id === currentCycleId)
 
-  const minutes = String(Math.floor(realTimeSeconds / 60)).padStart(2, '0')
-  const seconds = String(realTimeSeconds % 60).padStart(2, '0')
+  const fullSeconds = currentCycle ? currentCycle.minutes * 60 : 0
+  const secondsLeft = currentCycle ? fullSeconds - missedSeconds : 0
+
+  const minutes = currentCycle ? Math.floor(secondsLeft / 60) : 0
+  const seconds = currentCycle ? secondsLeft % 60 : 0
+
+  const minutesToDisplay = String(minutes).padStart(2, '0')
+  const secondsToDisplay = String(seconds).padStart(2, '0')
 
   useEffect(() => {
-    if (currentCycleID) {
-      setInterval(() => {
-        setMissedSeconds((prev) => prev + 1)
+    let cycleInterval: number
+
+    if (currentCycle) {
+      cycleInterval = setInterval(() => {
+        const timer = differenceInSeconds(new Date(), currentCycle.startDate)
+
+        if (timer >= fullSeconds) {
+          setCycles((prevCycles) => {
+            return prevCycles.map((cycle) => {
+              if (cycle.id === currentCycle.id) {
+                return {
+                  ...cycle,
+                  isActive: false,
+                  endDate: new Date(),
+                }
+              } else {
+                return cycle
+              }
+            })
+          })
+          setcurrentCycleId(undefined)
+          setMissedSeconds(fullSeconds)
+          clearInterval(cycleInterval)
+        } else {
+          setMissedSeconds(timer)
+        }
       }, 1000)
     }
-  }, [currentCycleID])
+
+    return () => clearInterval(cycleInterval)
+  }, [currentCycle, fullSeconds])
+
+  useEffect(() => {
+    if (currentCycleId) {
+      document.title = `${minutesToDisplay}:${secondsToDisplay}`
+    } else {
+      document.title = '00:00'
+    }
+  }, [minutesToDisplay, secondsToDisplay, currentCycleId])
 
   return (
     <HomeContainer>
@@ -81,6 +141,7 @@ export function Home() {
             id="title"
             placeholder="De um nome para o seu projeto"
             list="task-suggestions"
+            disabled={!!currentCycle}
             {...register('title')}
           />
 
@@ -95,9 +156,10 @@ export function Home() {
             type="number"
             id="minutes"
             placeholder="00"
+            disabled={!!currentCycle}
             step={5}
             min={1}
-            // max={60}
+            max={60}
             {...register('minutes', {
               valueAsNumber: true,
             })}
@@ -107,17 +169,24 @@ export function Home() {
         </InputContainer>
 
         <TimerContainer>
-          <span>{minutes[0]}</span>
-          <span>{minutes[1]}</span>
+          <span>{minutesToDisplay[0]}</span>
+          <span>{minutesToDisplay[1]}</span>
           <Separator>:</Separator>
-          <span>{seconds[0]}</span>
-          <span>{seconds[1]}</span>
+          <span>{secondsToDisplay[0]}</span>
+          <span>{secondsToDisplay[1]}</span>
         </TimerContainer>
 
-        <ButtonSubmit type="submit" disabled={!isSubmitDisable}>
-          <Play size={'2rem'} />
-          Começar
-        </ButtonSubmit>
+        {currentCycleId ? (
+          <StopButton type="button" onClick={handleStopCycle}>
+            <HandPalm size={'2rem'} />
+            Interromper
+          </StopButton>
+        ) : (
+          <ButtonSubmit type="submit" disabled={!isSubmitDisable}>
+            <Play size={'2rem'} />
+            Começar
+          </ButtonSubmit>
+        )}
       </form>
     </HomeContainer>
   )

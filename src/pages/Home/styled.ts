@@ -65,10 +65,7 @@ export const Separator = styled.small`
   color: ${(props) => props.theme['green-500']};
   background-color: none;
 `
-
-export const ButtonSubmit = styled.button`
-  background-color: ${(props) => props.theme['green-500']};
-  color: ${(props) => props.theme.white};
+export const ButtonProto = styled.button`
   border-radius: 8px;
   cursor: pointer;
 
@@ -86,9 +83,19 @@ export const ButtonSubmit = styled.button`
   &:hover {
     filter: brightness(0.9);
   }
+`
+
+export const ButtonSubmit = styled(ButtonProto)`
+  background-color: ${(props) => props.theme['green-500']};
+  color: ${(props) => props.theme.white};
 
   &:disabled {
     filter: opacity(0.5);
     cursor: not-allowed;
   }
+`
+
+export const StopButton = styled(ButtonProto)`
+  background-color: ${(props) => props.theme['red-500']};
+  color: ${(props) => props.theme.white};
 `
