@@ -17,13 +17,11 @@ interface CycleFormData {
 
 interface CycleContextProps {
   cycles: CycleProps[]
-  handleStartCycle: (data: CycleFormData) => void
+  createNewCycle: (data: CycleFormData) => void
   handleStopCycle: () => void
   setCycleAsComplete: (newCyles: CycleProps[]) => void
   currentCycleId: string | undefined
   currentCycle: CycleProps | undefined
-  //   currentCycleId: string | undefined
-  //   setCycleAsComplete: (cyles: CycleProps[]) => void
 }
 
 interface CycleContextContent {
@@ -37,7 +35,7 @@ export function CycleContextProvider({ children }: CycleContextContent) {
   const [currentCycleId, setcurrentCycleId] = useState<string | undefined>()
   const currentCycle = cycles.find((cycle) => cycle.id === currentCycleId)
 
-  function handleStartCycle(data: CycleFormData) {
+  function createNewCycle(data: CycleFormData) {
     const newCycleID = String(new Date().getTime())
     setcurrentCycleId(newCycleID)
 
@@ -79,7 +77,7 @@ export function CycleContextProvider({ children }: CycleContextContent) {
         cycles,
         currentCycle,
         currentCycleId,
-        handleStartCycle,
+        createNewCycle,
         handleStopCycle,
         setCycleAsComplete,
       }}
