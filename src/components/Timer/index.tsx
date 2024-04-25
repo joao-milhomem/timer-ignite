@@ -1,15 +1,14 @@
 import { useContext, useEffect, useState } from 'react'
 import { Separator, TimerContainer } from './style'
-import { CycleContext } from '../../pages/Home'
+
 import { differenceInSeconds } from 'date-fns'
+import { CycleContext } from '../../contexts/CycleContextProvider'
 
 export function Timer() {
-  const { cycles, setCycleAsComplete, currentCycleId } =
-    useContext(CycleContext)
+  const { cycles, setCycleAsComplete, currentCycle } = useContext(CycleContext)
 
   const [missedSeconds, setMissedSeconds] = useState<number>(0)
 
-  const currentCycle = cycles.find((cycle) => cycle.id === currentCycleId)
   const totalSeconds = currentCycle ? currentCycle.minutes * 60 : 0
   const secondsLeft = currentCycle ? totalSeconds - missedSeconds : 0
 

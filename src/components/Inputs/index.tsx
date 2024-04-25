@@ -1,5 +1,5 @@
+import { CycleContext } from '../../contexts/CycleContextProvider'
 import { useFormContext } from 'react-hook-form'
-import { CycleContext } from '../../pages/Home'
 import { InputContainer } from './style'
 import { useContext } from 'react'
 
