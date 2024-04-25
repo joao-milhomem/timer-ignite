@@ -1,12 +1,15 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Separator, TimerContainer } from './style'
 import { CycleContext } from '../../pages/Home'
 import { differenceInSeconds } from 'date-fns'
 
 export function Timer() {
-  const { currentCycle, missedSeconds, handleStopCycle, addMissedSecond } =
+  const { cycles, setCycleAsComplete, currentCycleId } =
     useContext(CycleContext)
 
+  const [missedSeconds, setMissedSeconds] = useState<number>(0)
+
+  const currentCycle = cycles.find((cycle) => cycle.id === currentCycleId)
   const totalSeconds = currentCycle ? currentCycle.minutes * 60 : 0
   const secondsLeft = currentCycle ? totalSeconds - missedSeconds : 0
 
@@ -18,21 +21,33 @@ export function Timer() {
 
   useEffect(() => {
     let cycleInterval: number
+    setMissedSeconds(0)
 
     if (currentCycle) {
       cycleInterval = setInterval(() => {
         const timer = differenceInSeconds(new Date(), currentCycle.startDate)
 
         if (timer >= totalSeconds) {
-          handleStopCycle()
+          const currentCycles = cycles.map((cycle) => {
+            if (cycle.id === currentCycle.id) {
+              return {
+                ...cycle,
+                isActive: false,
+                endDate: new Date(),
+              }
+            } else {
+              return cycle
+            }
+          })
+          setCycleAsComplete(currentCycles)
         } else {
-          addMissedSecond(timer)
+          setMissedSeconds(timer)
         }
       }, 1000)
     }
 
     return () => clearInterval(cycleInterval)
-  }, [currentCycle, totalSeconds, handleStopCycle, addMissedSecond])
+  }, [currentCycle, totalSeconds, cycles, setCycleAsComplete])
 
   useEffect(() => {
     if (currentCycle) {
@@ -41,6 +56,7 @@ export function Timer() {
       document.title = '00:00'
     }
   }, [minutesToDisplay, secondsToDisplay, currentCycle])
+
   return (
     <TimerContainer>
       <span>{minutesToDisplay[0]}</span>

@@ -1,18 +1,11 @@
+import { ButtonSubmit, HomeContainer, StopButton } from './styled'
+import { FormProvider, useForm } from 'react-hook-form'
 import { HandPalm, Play } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createContext, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import * as zod from 'zod'
-import {
-  ButtonSubmit,
-  HomeContainer,
-  // InputContainer,
-  // Separator,
-  StopButton,
-  // TimerContainer,
-} from './styled'
 import { Inputs } from '../../components/Inputs'
+import { createContext, useState } from 'react'
 import { Timer } from '../../components/Timer'
+import * as zod from 'zod'
 
 const cycleFormSchema = zod.object({
   title: zod.string().min(1, 'Campo obrigatório.'),
@@ -28,13 +21,13 @@ interface CycleProps {
   isActive: boolean
   startDate: Date
   endDate?: Date
+  shutDownDate?: Date
 }
 
 interface CycleContextProps {
-  currentCycle: CycleProps | undefined
-  missedSeconds: number
-  handleStopCycle: () => void
-  addMissedSecond: (time: number) => void
+  cycles: CycleProps[]
+  currentCycleId: string | undefined
+  setCycleAsComplete: (cyles: CycleProps[]) => void
 }
 
 export const CycleContext = createContext({} as CycleContextProps)
@@ -56,7 +49,6 @@ export function Home() {
 
   const [cycles, setCycles] = useState<CycleProps[]>([])
   const [currentCycleId, setcurrentCycleId] = useState<string | undefined>()
-  const [missedSeconds, setMissedSeconds] = useState<number>(0)
 
   function handleStartCycle(data: cycleFormInputs) {
     const newCycleID = String(new Date().getTime())
@@ -80,7 +72,7 @@ export function Home() {
         return {
           ...cycle,
           isActive: false,
-          endDate: new Date(),
+          shutDownDate: new Date(),
         }
       } else {
         return cycle
@@ -88,18 +80,16 @@ export function Home() {
     })
     setCycles(currentCycles)
     setcurrentCycleId(undefined)
-    setMissedSeconds(0)
   }
 
-  function addMissedSecond(time: number) {
-    setMissedSeconds(time)
+  function setCycleAsComplete(newCycles: CycleProps[]) {
+    setCycles(newCycles)
+    setcurrentCycleId(undefined)
   }
-
-  const currentCycle = cycles.find((cycle) => cycle.id === currentCycleId)
 
   return (
     <CycleContext.Provider
-      value={{ currentCycle, missedSeconds, handleStopCycle, addMissedSecond }}
+      value={{ currentCycleId, cycles, setCycleAsComplete }}
     >
       <HomeContainer>
         <form onSubmit={handleSubmit(handleStartCycle)}>
@@ -110,7 +100,7 @@ export function Home() {
           <Timer />
 
           {currentCycleId ? (
-            <StopButton type="button" onClick={handleStopCycle}>
+            <StopButton type="button" onClick={() => handleStopCycle()}>
               <HandPalm size={'2rem'} />
               Interromper
             </StopButton>
