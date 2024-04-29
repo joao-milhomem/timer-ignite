@@ -27,18 +27,19 @@ export function Timer() {
         const timer = differenceInSeconds(new Date(), currentCycle.startDate)
 
         if (timer >= totalSeconds) {
-          const currentCycles = cycles.map((cycle) => {
-            if (cycle.id === currentCycle.id) {
-              return {
-                ...cycle,
-                isActive: false,
-                endDate: new Date(),
-              }
-            } else {
-              return cycle
-            }
-          })
-          setCycleAsComplete(currentCycles)
+          // const currentCycles = cycles.map((cycle) => {
+          //   if (cycle.id === currentCycle.id) {
+          //     return {
+          //       ...cycle,
+          //       isActive: false,
+          //       endDate: new Date(),
+          //     }
+          //   } else {
+          //     return cycle
+          //   }
+          // })
+          // setCycleAsComplete(curretCycles)
+          setCycleAsComplete()
         } else {
           setMissedSeconds(timer)
         }

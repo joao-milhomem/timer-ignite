@@ -14,10 +14,12 @@ export function History() {
       <div className="table-container">
         <table>
           <thead>
-            <th>Tarefa</th>
-            <th>Duração</th>
-            <th>Início</th>
-            <th>Status</th>
+            <tr>
+              <th>Tarefa</th>
+              <th>Duração</th>
+              <th>Início</th>
+              <th>Status</th>
+            </tr>
           </thead>
           <tbody>
             {cycles.map((cycle) => {
@@ -33,15 +35,15 @@ export function History() {
                   </td>
                   <td>
                     {cycle.endDate && (
-                      <Status statusColor="green">Finalizado</Status>
+                      <Status $statusColor="green">Finalizado</Status>
                     )}
 
                     {cycle.shutDownDate && !cycle.endDate && (
-                      <Status statusColor="red">Interrompido</Status>
+                      <Status $statusColor="red">Interrompido</Status>
                     )}
 
                     {cycle.isActive && (
-                      <Status statusColor="yellow">Em andamento</Status>
+                      <Status $statusColor="yellow">Em andamento</Status>
                     )}
                   </td>
                 </tr>

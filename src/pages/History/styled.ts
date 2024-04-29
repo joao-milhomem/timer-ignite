@@ -72,7 +72,7 @@ const COLOR_MAPPING = {
 }
 
 interface StatusProps {
-  statusColor: keyof typeof COLOR_MAPPING
+  $statusColor: keyof typeof COLOR_MAPPING
 }
 
 export const Status = styled.span<StatusProps>`
@@ -87,6 +87,6 @@ export const Status = styled.span<StatusProps>`
 
     border-radius: 50%;
     background-color: ${(props) =>
-      props.theme[COLOR_MAPPING[props.statusColor]]};
+      props.theme[COLOR_MAPPING[props.$statusColor]]};
   }
 `

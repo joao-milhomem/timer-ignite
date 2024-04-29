@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useReducer } from 'react'
 
 interface CycleProps {
   id: string
@@ -19,7 +19,7 @@ interface CycleContextProps {
   cycles: CycleProps[]
   createNewCycle: (data: CycleFormData) => void
   handleStopCycle: () => void
-  setCycleAsComplete: (newCyles: CycleProps[]) => void
+  setCycleAsComplete: () => void
   currentCycleId: string | undefined
   currentCycle: CycleProps | undefined
 }
@@ -28,16 +28,80 @@ interface CycleContextContent {
   children: ReactNode
 }
 
+interface StateCyclesProps {
+  cycles: CycleProps[]
+  currentCycleId: string | undefined
+}
+
+interface ActionProps {
+  type: string
+  payload: CycleProps
+}
+
 export const CycleContext = createContext({} as CycleContextProps)
 
 export function CycleContextProvider({ children }: CycleContextContent) {
-  const [cycles, setCycles] = useState<CycleProps[]>([])
-  const [currentCycleId, setcurrentCycleId] = useState<string | undefined>()
-  const currentCycle = cycles.find((cycle) => cycle.id === currentCycleId)
+  // const [cycles, setCycles] = useState<CycleProps[]>([])
+
+  const [stateCycles, dispatch] = useReducer(
+    (state: StateCyclesProps, action: ActionProps) => {
+      if (action.type === 'CREATE_NEW_CYCLE') {
+        return {
+          cycles: [...state.cycles, action.payload],
+          currentCycleId: action.payload.id,
+        }
+      }
+
+      if (action.type === 'SHUTDOWN_CYCLE') {
+        // if (action.payload.id === state.currentCycleId) {
+        return {
+          cycles: state.cycles.map((cycle) => {
+            if (cycle.id === action.payload.id) {
+              return {
+                ...cycle,
+                isActive: false,
+                shutDownDate: new Date(),
+              }
+            }
+            return cycle
+          }),
+          currentCycleId: undefined,
+        }
+        // }
+      }
+
+      if (action.type === 'COMPLETE_CYCLE') {
+        return {
+          cycles: state.cycles.map((cycle) => {
+            if (cycle.id === action.payload.id) {
+              return {
+                ...cycle,
+                isActive: false,
+                endDate: new Date(),
+              }
+            }
+            return cycle
+          }),
+          currentCycleId: undefined,
+        }
+      }
+      return state
+    },
+    {
+      cycles: [],
+      currentCycleId: undefined,
+    },
+  )
+  const { cycles, currentCycleId } = stateCycles
+
+  // const [currentCycleId, setcurrentCycleId] = useState<string | undefined>()
+  const currentCycle = cycles.find(
+    (cycle: CycleProps) => cycle.id === currentCycleId,
+  )
 
   function createNewCycle(data: CycleFormData) {
     const newCycleID = String(new Date().getTime())
-    setcurrentCycleId(newCycleID)
+    // setcurrentCycleId(newCycleID)
 
     const newCycle: CycleProps = {
       id: newCycleID,
@@ -47,30 +111,46 @@ export function CycleContextProvider({ children }: CycleContextContent) {
       startDate: new Date(),
     }
 
-    setCycles((prevCycles) => [...prevCycles, newCycle])
+    dispatch({
+      type: 'CREATE_NEW_CYCLE',
+      payload: newCycle,
+    })
+
+    // setCycles((prevCycles) => [...prevCycles, newCycle])
     // reset()
   }
 
   function handleStopCycle() {
-    const currentCycles = cycles.map((cycle) => {
-      if (cycle.id === currentCycleId) {
-        return {
-          ...cycle,
-          isActive: false,
-          shutDownDate: new Date(),
-        }
-      } else {
-        return cycle
-      }
-    })
-    setCycles(currentCycles)
-    setcurrentCycleId(undefined)
+    currentCycle &&
+      dispatch({
+        type: 'SHUTDOWN_CYCLE',
+        payload: currentCycle,
+      })
+    // const currentCycles = cycles.map((cycle) => {
+    //   if (cycle.id === currentCycleId) {
+    //     return {
+    //       ...cycle,
+    //       isActive: false,
+    //       shutDownDate: new Date(),
+    //     }
+    //   } else {
+    //     return cycle
+    //   }
+    // })
+    // setCycles(currentCycles)
+    // setcurrentCycleId(undefined)
   }
 
-  function setCycleAsComplete(newCycles: CycleProps[]) {
-    setCycles(newCycles)
-    setcurrentCycleId(undefined)
+  function setCycleAsComplete() {
+    currentCycle &&
+      dispatch({
+        type: 'COMPLETE_CYCLE',
+        payload: currentCycle,
+      })
+    // setCycles(newCycles)
+    // setcurrentCycleId(undefined)
   }
+
   return (
     <CycleContext.Provider
       value={{
