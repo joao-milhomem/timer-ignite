@@ -1,12 +1,12 @@
 import { ButtonSubmit, HomeContainer, StopButton } from './styled'
+import { CycleContext } from '../../contexts/CycleContextProvider'
 import { FormProvider, useForm } from 'react-hook-form'
 import { HandPalm, Play } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Inputs } from '../../components/Inputs'
-import { useContext } from 'react'
 import { Timer } from '../../components/Timer'
+import { useContext } from 'react'
 import * as zod from 'zod'
-import { CycleContext } from '../../contexts/CycleContextProvider'
 
 const cycleFormSchema = zod.object({
   title: zod.string().min(1, 'Campo obrigatório.'),
@@ -27,16 +27,16 @@ export function Home() {
     },
   })
 
+  function handleCreateNewCycle(data: cycleFormInputs) {
+    createNewCycle(data)
+    reset()
+  }
+
   const { handleSubmit, watch, reset } = newHookForm
 
   const titleInputValue = watch('title')
   const minutesInputValue = watch('minutes')
   const isSubmitDisable = titleInputValue && minutesInputValue
-
-  function handleCreateNewCycle(data: cycleFormInputs) {
-    createNewCycle(data)
-    reset()
-  }
 
   return (
     <HomeContainer>
@@ -48,7 +48,7 @@ export function Home() {
         <Timer />
 
         {currentCycleId ? (
-          <StopButton type="button" onClick={() => handleStopCycle()}>
+          <StopButton type="button" onClick={handleStopCycle}>
             <HandPalm size={'2rem'} />
             Interromper
           </StopButton>
