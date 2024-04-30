@@ -45,7 +45,7 @@ export function Timer() {
     if (currentCycle) {
       document.title = `${minutesToDisplay}:${secondsToDisplay}`
     } else {
-      document.title = '00:00'
+      document.title = 'Ignite Timer'
     }
   }, [minutesToDisplay, secondsToDisplay, currentCycle])
 
