@@ -7,7 +7,12 @@ import { CycleContext } from '../../contexts/CycleContextProvider'
 export function Timer() {
   const { cycles, setCycleAsComplete, currentCycle } = useContext(CycleContext)
 
-  const [missedSeconds, setMissedSeconds] = useState<number>(0)
+  const [missedSeconds, setMissedSeconds] = useState<number>(() => {
+    if (currentCycle) {
+      return differenceInSeconds(new Date(), currentCycle.startDate)
+    }
+    return 0
+  })
 
   const totalSeconds = currentCycle ? currentCycle.minutes * 60 : 0
   const secondsLeft = currentCycle ? totalSeconds - missedSeconds : 0
@@ -20,31 +25,18 @@ export function Timer() {
 
   useEffect(() => {
     let cycleInterval: number
-    setMissedSeconds(0)
 
     if (currentCycle) {
       cycleInterval = setInterval(() => {
         const timer = differenceInSeconds(new Date(), currentCycle.startDate)
 
         if (timer >= totalSeconds) {
-          // const currentCycles = cycles.map((cycle) => {
-          //   if (cycle.id === currentCycle.id) {
-          //     return {
-          //       ...cycle,
-          //       isActive: false,
-          //       endDate: new Date(),
-          //     }
-          //   } else {
-          //     return cycle
-          //   }
-          // })
-          // setCycleAsComplete(curretCycles)
           setCycleAsComplete()
         } else {
           setMissedSeconds(timer)
         }
       }, 1000)
-    }
+    } else setMissedSeconds(0)
 
     return () => clearInterval(cycleInterval)
   }, [currentCycle, totalSeconds, cycles, setCycleAsComplete])
