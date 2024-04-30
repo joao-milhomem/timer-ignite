@@ -1,5 +1,10 @@
 import { ReactNode, createContext, useReducer } from 'react'
-import { ActionTypes, StateCycleReducer } from '../reduces/StateCycleReducer'
+import { cyclesReducer } from '../reducers/cycles/reducer'
+import {
+  createNewCycleAction,
+  setCycleAsCompleteAction,
+  shutDownCicleAction,
+} from '../reducers/cycles/actions'
 
 export interface CycleProps {
   id: string
@@ -32,7 +37,7 @@ interface CycleContextContent {
 export const CycleContext = createContext({} as CycleContextProps)
 
 export function CycleContextProvider({ children }: CycleContextContent) {
-  const [stateCycles, dispatch] = useReducer(StateCycleReducer, {
+  const [stateCycles, dispatch] = useReducer(cyclesReducer, {
     cycles: [],
     currentCycleId: undefined,
   })
@@ -54,26 +59,15 @@ export function CycleContextProvider({ children }: CycleContextContent) {
       startDate: new Date(),
     }
 
-    dispatch({
-      type: ActionTypes.CREATE_NEW_CYCLE,
-      payload: newCycle,
-    })
+    dispatch(createNewCycleAction(newCycle))
   }
 
   function handleStopCycle() {
-    currentCycle &&
-      dispatch({
-        type: ActionTypes.SHUTDOWN_CYCLE,
-        payload: currentCycle,
-      })
+    dispatch(shutDownCicleAction())
   }
 
   function setCycleAsComplete() {
-    currentCycle &&
-      dispatch({
-        type: ActionTypes.COMPLETE_CYCLE,
-        payload: currentCycle,
-      })
+    dispatch(setCycleAsCompleteAction())
   }
 
   return (

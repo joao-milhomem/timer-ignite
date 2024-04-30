@@ -1,4 +1,5 @@
-import { CycleProps } from '../contexts/CycleContextProvider'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CycleProps } from '../../contexts/CycleContextProvider'
 
 interface StateCyclesProps {
   cycles: CycleProps[]
@@ -11,15 +12,12 @@ export enum ActionTypes {
   COMPLETE_CYCLE = 'COMPLETE_CYCLE',
 }
 
-interface ActionProps {
-  type: ActionTypes
-  payload: CycleProps
-}
+// interface ActionProps {
+//   type: ActionTypes
+//   payload: CycleProps
+// }
 
-export function StateCycleReducer(
-  state: StateCyclesProps,
-  action: ActionProps,
-) {
+export function cyclesReducer(state: StateCyclesProps, action: any) {
   switch (action.type) {
     case ActionTypes.CREATE_NEW_CYCLE:
       return {
@@ -30,7 +28,7 @@ export function StateCycleReducer(
     case ActionTypes.SHUTDOWN_CYCLE:
       return {
         cycles: state.cycles.map((cycle) => {
-          if (cycle.id === action.payload.id) {
+          if (cycle.id === state.currentCycleId) {
             return {
               ...cycle,
               isActive: false,
